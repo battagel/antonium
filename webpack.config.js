@@ -12,6 +12,7 @@ const tsRule = {
 
 const cssRule = {
 	test: /\.css$/i,
+	exclude: /node_modules/,
 	use: [MiniCssExtractPlugin.loader,"css-loader"]
 }
 
@@ -43,6 +44,9 @@ module.exports = {
 	},
 	module: {
 		rules: [tsRule, cssRule],
+	},
+	resolve: {
+		extensions: [".ts", ".tsx", '.js', '.json']
 	},
 	plugins,
 }
