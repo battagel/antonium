@@ -3,7 +3,11 @@
 	"description": "Abbreviation highlighter",
 	"version": "1.0",
 	"manifest_version": 3,
-	"action" {
+	"action": {
 		"default_popup": "popup.html"
 	},
+	"content_scripts": [{
+		"matches": ["<all_urls>"],
+		"js": ["contentscript.js"]
+	}]
 }
