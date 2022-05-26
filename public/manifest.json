@@ -9,5 +9,10 @@
 	"content_scripts": [{
 		"matches": ["<all_urls>"],
 		"js": ["contentscript.js"]
-	}]
+	}],
+	"host_permissions": ["<all_urls>"],
+	"background": {
+		"service_worker": "background.js"
+	},
+	"permissions": ["scripting"]
 }

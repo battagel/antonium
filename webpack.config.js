@@ -37,6 +37,7 @@ module.exports = {
 	entry: {
 		popup: './src/popup.tsx',
 		contentscript: './src/contentscript.ts',
+		background: './src/background.js'
 	},
 	output: {
 		filename: '[name].js',

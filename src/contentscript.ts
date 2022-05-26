@@ -1,1 +1,1 @@
-console.log("Content script");
+alert("Test");
