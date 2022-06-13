@@ -3,6 +3,11 @@
 	"description": "Abbreviation highlighter",
 	"version": "1.0",
 	"manifest_version": 3,
+	"icons": {
+		"16": "antonium-logo16.png",
+		"48": "antonium-logo48.png",
+		"128": "antonium-logo128.png"
+	},
 	"action": {
 		"default_popup": "popup.html"
 	},
