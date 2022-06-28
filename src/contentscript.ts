@@ -1,40 +1,98 @@
-(function () {
-  function handleTextNode(textNode: any) {
-    if (
-      textNode.nodeName !== "#text" ||
-      textNode.parentNode.nodeName === "SCRIPT" ||
-      textNode.parentNode.nodeName === "STYLE"
-    ) {
-      //Don't do anything except on text nodes, which are not children
-      //  of <script> or <style>.
-      return;
-    }
-    let origText = textNode.textContent;
-    let newHtml = origText.replace(/(^|\s)(\S+)(?=\s|$)/gm, "$1Hello");
-    //Only change the DOM if we actually made a replacement in the text.
-    //Compare the strings, as it should be faster than a second RegExp operation and
-    //  lets us use the RegExp in only one place for maintainability.
-    if (newHtml !== origText) {
-      let newSpan = document.createElement("span");
-      newSpan.innerHTML = newHtml;
-      textNode.parentNode.replaceChild(newSpan, textNode);
-    }
+let data = [{
+  "acronym": "HPE",
+  "definition": "Hewlett Packard Enterprise",
+  "reference": "hpe.com"
+},
+{
+  "acronym": "DSCC",
+  "definition": "Data Services Cloud Console",
+  "reference": "hpe.com/dscc"
+}];
+
+let db: any = null;
+
+
+function create_db() {
+  var shouldInit = false;
+  console.log("Creating db...");
+  const request = indexedDB.open("AntoniumDB");
+
+  request.onerror = function(event: any) {
+    console.log("Problem opening Antonium Database")
   }
 
-  //Find all text node descendants of <p> elements:
-  let allP = document.querySelectorAll("p"); // Get all <p>
-  let textNodes = [];
-  for (let p of allP) {
-    //Create a NodeIterator to get the text nodes descendants of each <p>
-    let nodeIter = document.createNodeIterator(p, NodeFilter.SHOW_TEXT);
-    let currentNode;
-    //Add text nodes found to list of text nodes to process below.
-    while ((currentNode = nodeIter.nextNode())) {
-      textNodes.push(currentNode);
+  request.onupgradeneeded = function(event: any) {
+    shouldInit = true;
+    console.log("Upgrade needed");
+    db = request.result;
+    let objectStore = db.createObjectStore("acronyms", {keyPath: "acronym"});
+    console.log("ObjectStore created");
+  }
+
+  // Will always run when database is opened
+  request.onsuccess = function(event: any) {
+    db = request.result;
+    console.log("Antonium Database opened");
+    if (shouldInit) {
+      insert_records(data);
     }
   }
-  //Process each text node
-  textNodes.forEach(function (el) {
-    handleTextNode(el);
-  });
-})();
+}
+
+function delete_db() {
+  const request = indexedDB.deleteDatabase('AntoniumDB')
+
+  request.onsuccess = function(event: any) {
+    console.log("Antonium Database deleted");
+    db.onerror = function(event: any) {
+      console.log("Error deleting database");
+    }
+  }
+}
+
+async function insert_records(data: any) {
+  if (db) {
+    // what tables should transaction be associated with (can be multiple tables)
+    const insert_transaction = db.transaction("acronyms", "readwrite");
+    // specify specific table we want to do transaction on
+    const objectStore = insert_transaction.objectStore("acronyms");
+
+    insert_transaction.oncomplete = function () {
+      console.log("All INSERT transactions successfully completed");
+    };
+
+    insert_transaction.onerror = function() {
+      console.log("Problem with INSERT transactions");
+    };
+
+    data.forEach(function(record: any) {
+      let request = objectStore.put(record);
+
+      request.onsuccess = function() {
+        console.log("Added: ", record);
+      }
+    });
+  }
+}
+
+function get_record(acronym: any) {
+  console.log("Getting record");
+  if (db) {
+    // what tables should transaction be associated with (can be multiple tables)
+    let transaction: any = db.transaction("acronyms"); // read only transaction
+    // specify specific table we want to do transaction on
+    let acronyms: any = transaction.objectStore("acronyms");
+
+    let request: any = acronyms.get(acronym);
+
+    request.onsuccess = function() {
+      if (request.result !== undefined) {
+        console.log("Acronym: ", request.result);
+      } else {
+        console.log("No such acronym");
+      }
+    }
+  }
+}
+
+create_db();
