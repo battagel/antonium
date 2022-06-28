@@ -10,10 +10,7 @@
       return;
     }
     let origText = textNode.textContent;
-    let newHtml = origText.replace(
-      /(^|\s)(\S+)(?=\s|$)/gm,
-      "$1<abbr title='text'>$2</abbr>"
-    );
+    let newHtml = origText.replace(/(^|\s)(\S+)(?=\s|$)/gm, "$1Hello");
     //Only change the DOM if we actually made a replacement in the text.
     //Compare the strings, as it should be faster than a second RegExp operation and
     //  lets us use the RegExp in only one place for maintainability.
