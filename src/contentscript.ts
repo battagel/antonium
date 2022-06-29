@@ -1,40 +1,92 @@
-(function () {
-  function handleTextNode(textNode: any) {
-    if (
-      textNode.nodeName !== "#text" ||
-      textNode.parentNode.nodeName === "SCRIPT" ||
-      textNode.parentNode.nodeName === "STYLE"
-    ) {
-      //Don't do anything except on text nodes, which are not children
-      //  of <script> or <style>.
-      return;
-    }
-    let origText = textNode.textContent;
-    let newHtml = origText.replace(/(^|\s)(\S+)(?=\s|$)/gm, "$1Hello");
-    //Only change the DOM if we actually made a replacement in the text.
-    //Compare the strings, as it should be faster than a second RegExp operation and
-    //  lets us use the RegExp in only one place for maintainability.
-    if (newHtml !== origText) {
-      let newSpan = document.createElement("span");
-      newSpan.innerHTML = newHtml;
-      textNode.parentNode.replaceChild(newSpan, textNode);
-    }
-  }
+const test_db: any = {
+  acronyms: "DSCC",
+  definition: "Data Services Cloud Console",
+  references: "hpe.com",
+};
 
-  //Find all text node descendants of <p> elements:
-  let allP = document.querySelectorAll("p"); // Get all <p>
-  let textNodes = [];
-  for (let p of allP) {
-    //Create a NodeIterator to get the text nodes descendants of each <p>
-    let nodeIter = document.createNodeIterator(p, NodeFilter.SHOW_TEXT);
-    let currentNode;
-    //Add text nodes found to list of text nodes to process below.
-    while ((currentNode = nodeIter.nextNode())) {
-      textNodes.push(currentNode);
+function getParagraphs() {
+  const text_elements = document
+    .getElementById("content")!
+    .querySelectorAll("p, h1, h2, h3, h4");
+
+  // you can add more in the query using a comma e.g. "p, span"
+
+  text_elements.forEach(updateParagraph);
+}
+
+function updateParagraph(para_obj: any) {
+  // For searching and replacing of words in the paragraph
+  var paragraph: string = para_obj.innerHTML;
+  const word_pattern = /[a-zA-Z0-9]/;
+  var on_tag: boolean = false;
+  var on_word: boolean = false;
+  var start_word: number = 0;
+  var end_word: number = 0;
+  const len: number = paragraph.length;
+
+  for (var ptr: number = len - 1; ptr >= 0; ptr--) {
+    let char = paragraph[ptr];
+
+    if (char === ">") {
+      // found beginning of a tag
+      on_tag = true;
+      if (on_word) {
+        // beginning of tag is the end of a word
+        paragraph = process_word(ptr + 1, end_word, paragraph);
+        on_word = false;
+      }
+      continue;
+    }
+    if (char == "<" && on_tag) {
+      // found end of tag
+      on_tag = false;
+      continue;
+    }
+    if (!on_tag) {
+      // not in a tag so must be raw text
+      if (word_pattern.test(char)) {
+        // found a letter
+        if (!on_word) {
+          // starting word
+          on_word = true;
+          end_word = ptr;
+        } else {
+          // middle of word
+        }
+      } else {
+        // found a deliminator
+        if (on_word) {
+          // found a word!
+          // process word
+          paragraph = process_word(ptr + 1, end_word, paragraph);
+          on_word = false;
+        }
+      }
     }
   }
-  //Process each text node
-  textNodes.forEach(function (el) {
-    handleTextNode(el);
-  });
-})();
+  if (on_word == true) {
+    on_word = false;
+    paragraph = process_word(ptr + 1, end_word, paragraph);
+  }
+  para_obj.innerHTML = paragraph;
+}
+
+function process_word(
+  word_start: number,
+  word_end: number,
+  para_text: string
+): string {
+  // Look into instead of returning, use by reference to edit para_text
+  var word = para_text.substring(word_start, word_end + 1);
+  console.log(word);
+
+  // Query word
+  var new_word = "<abbr title='" + word + "'>HPE</abbr>";
+  // Change word in para
+  para_text =
+    para_text.slice(0, word_start) + new_word + para_text.slice(word_end + 1);
+  //console.log(para_text);
+  return para_text;
+}
+
+getParagraphs();
