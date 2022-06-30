@@ -1,6 +1,13 @@
 import { PageScanner } from "./pagescanner";
 
-var page_scanner = new PageScanner();
+const types: any = {
+  general: window.localStorage.getItem("gen"),
+  abbreviated: window.localStorage.getItem("abbr"),
+  shortened: window.localStorage.getItem("short"),
+  jargon: window.localStorage.getItem("jargon"),
+};
+
+var page_scanner = new PageScanner(types);
 
 page_scanner.scan();
 
@@ -8,7 +15,7 @@ var url = "http://localhost:8000/confluence.html";
 
 const parser = new DOMParser();
 
-var raw_html = fetch(url)
+fetch(url)
   .then((res) => res.text())
   .then((html: any) => {
     disassemble_html(parser.parseFromString(html, "text/html"));
