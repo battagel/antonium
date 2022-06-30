@@ -1,9 +1,14 @@
 export class PageScanner {
   scan() {
-    const text_elements = document
-      .getElementById("content")!
-      .querySelectorAll("p, h1, h2, h3, h4");
+    const content_elements = document.getElementById("content")!;
 
+    let text_elements;
+    if (content_elements) {
+      text_elements = content_elements.querySelectorAll("p, h1, h2, h3, h4");
+    } else {
+      console.log("Not on correct page - no 'content' element");
+      return undefined;
+    }
     // you can add more in the query using a comma e.g. "p, span"
 
     for (var i = 0; i < text_elements.length; i++) {
