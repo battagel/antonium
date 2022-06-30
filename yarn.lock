@@ -106,10 +106,10 @@
     "react-popper" "^2.2.5"
     "react-textarea-autosize" "^8.3.2"
 
-"@mantine/hooks@^4.2.11", "@mantine/hooks@4.2.6":
-  "integrity" "sha512-kwbMbpT8ErroVSLK7fxEN0SypvK0rEErYyHKfKSMah5buWSu2F/diIuafL5UjvN7aQfS0ZJnqnH/avUN25H3qg=="
-  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-4.2.11.tgz"
-  "version" "4.2.11"
+"@mantine/hooks@4.2.6":
+  "integrity" "sha512-SEdnh/ugmYL819ssPK0pRNZO+/gq709BwxfzhA2x7QsdQBlcrXU0vrrckhnScTG/iqlVxNDi36Yhl31JIBmd/Q=="
+  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-4.2.6.tgz"
+  "version" "4.2.6"
 
 "@mantine/styles@4.2.6":
   "integrity" "sha512-Tt8BSDFTErNz7BSTzD1m9/sDoShK9E1xHZ91LEEall3ibTKmkJwV+0ptJ0eyT7ZEPqa8iXsLpWjNNONYPW4F7g=="
@@ -1189,6 +1189,11 @@
   "integrity" "sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA=="
   "resolved" "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
   "version" "5.1.0"
+
+"idb@^7.0.2":
+  "integrity" "sha512-jjKrT1EnyZewQ/gCBb/eyiYrhGzws2FeY92Yx8qT9S9GeQAmo4JFVIiWRIfKW/6Ob9A+UDAOW9j9jn58fy2HIg=="
+  "resolved" "https://registry.npmjs.org/idb/-/idb-7.0.2.tgz"
+  "version" "7.0.2"
 
 "ignore@^5.2.0":
   "integrity" "sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ=="

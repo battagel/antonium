@@ -1,7 +1,7 @@
 export class PageScanner {
   db: any;
 
-  constructor(db:any) {
+  constructor(db: any) {
     this.db = db;
   }
 
@@ -80,17 +80,12 @@ export class PageScanner {
     para_obj.innerHTML = paragraph;
   }
 
-  async process_word(
-    word_start: number,
-    word_end: number,
-    para_text: string
-  ) {
+  async process_word(word_start: number, word_end: number, para_text: string) {
     // Look into instead of returning, use by reference to edit para_text
     var word = para_text.substring(word_start, word_end + 1);
 
     // Query word
     var new_word = await this.query_word(word);
-    console.log("Word returned: ", new_word)
     // Change word in para
     para_text =
       para_text.slice(0, word_start) + new_word + para_text.slice(word_end + 1);
@@ -101,23 +96,21 @@ export class PageScanner {
   async query_word(word: string) {
     // Query the DB for the word
     let query = await this.query_db(word);
-    console.log("query:");
-    console.log(query);
     // if the word exists compile a abbr tag
     if (query) {
       const abbr_tag: string = this.tooltip(query);
       return abbr_tag;
     } else {
-      console.log("No result found: ", word)
+      console.log("No result found: ", word);
       return word;
     }
     // if it doesnt exist then just return the word
   }
 
   async query_db(word: string): Promise<any> {
-    return this.db.get('acronyms', word);
+    return this.db.get("acronyms", word);
   }
-  
+
   tooltip(word: any) {
     return (
       "<div class='tooltip'>" +
