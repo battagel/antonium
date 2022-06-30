@@ -19,20 +19,26 @@ function disassemble_html(raw_html: any) {
   const rows = raw_html.querySelectorAll("tr");
   let data_items: Array<any> = [];
   for (var i = 0; i < rows.length; i++) {
-    data_items.push(process_row(rows[i]));
+    var row_dict = process_row(rows[i]);
+    if (dict) {
+      data_items.push(row_dict);
+    }
   }
   console.log(data_items);
+
   return data_items;
 }
 
 function process_row(row: any) {
   console.log(row);
   var tds = row.querySelectorAll("td");
-  if (tds.length === 3) {
+  if (tds[0]) {
     return {
       acronym: tds[0].innerText,
       definition: tds[1].innerText,
       reference: tds[2].innerText,
     };
+  } else {
+    return undefined;
   }
 }
