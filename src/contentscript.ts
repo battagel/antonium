@@ -20,7 +20,7 @@ function disassemble_html(raw_html: any) {
   let data_items: Array<any> = [];
   for (var i = 0; i < rows.length; i++) {
     var row_dict = process_row(rows[i]);
-    if (dict) {
+    if (row_dict) {
       data_items.push(row_dict);
     }
   }
@@ -32,12 +32,20 @@ function disassemble_html(raw_html: any) {
 function process_row(row: any) {
   console.log(row);
   var tds = row.querySelectorAll("td");
+  var dict_temp = {
+    acronym: undefined,
+    definition: undefined,
+    reference: undefined,
+  };
   if (tds[0]) {
-    return {
-      acronym: tds[0].innerText,
-      definition: tds[1].innerText,
-      reference: tds[2].innerText,
-    };
+    dict_temp["acronym"] = tds[0].innerText;
+    if (tds[1]) {
+      dict_temp["definition"] = tds[1].innerText;
+    }
+    if (tds[2]) {
+      dict_temp["reference"] = tds[2].innerText;
+    }
+    return dict_temp;
   } else {
     return undefined;
   }
