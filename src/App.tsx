@@ -16,6 +16,7 @@ import Options from "./components/Options";
 export default function App() {
   const theme = useMantineTheme();
   const [helpOpened, setHelpOpened] = useState<boolean>(false);
+
   return (
     <MantineProvider
       theme={{
