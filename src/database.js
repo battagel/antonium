@@ -25,6 +25,7 @@ export class DatabaseMgr {
             DatabaseMgr.insert_records(data);
           }
         }
+        return 1;
       }
 
       static insert_records(data) {

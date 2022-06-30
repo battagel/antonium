@@ -1,11 +1,11 @@
 export class PageScanner {
-  types: any;
-  constructor(types: any) {
-    this.types = types;
+  db: any;
+
+  constructor(db:any) {
+    this.db = db;
   }
 
   scan() {
-    console.log(this.types);
     const head_element = document.getElementsByTagName("head");
     const content_element = document.getElementById("content")!;
 
@@ -24,7 +24,7 @@ export class PageScanner {
     }
   }
 
-  update_paragraph(para_obj: any) {
+  async update_paragraph(para_obj: any) {
     // For searching and replacing of words in the paragraph
     var paragraph: string = para_obj.innerHTML;
     const word_pattern = /[a-zA-Z0-9]/;
@@ -41,7 +41,7 @@ export class PageScanner {
         on_tag = true;
         if (on_word) {
           // beginning of tag is the end of a word
-          paragraph = this.process_word(ptr + 1, end_word, paragraph);
+          paragraph = await this.process_word(ptr + 1, end_word, paragraph);
           on_word = false;
         }
         continue;
@@ -67,7 +67,7 @@ export class PageScanner {
           if (on_word) {
             // found a word!
             // process word
-            paragraph = this.process_word(ptr + 1, end_word, paragraph);
+            paragraph = await this.process_word(ptr + 1, end_word, paragraph);
             on_word = false;
           }
         }
@@ -75,21 +75,22 @@ export class PageScanner {
     }
     if (on_word == true) {
       on_word = false;
-      paragraph = this.process_word(ptr + 1, end_word, paragraph);
+      paragraph = await this.process_word(ptr + 1, end_word, paragraph);
     }
     para_obj.innerHTML = paragraph;
   }
 
-  process_word(
+  async process_word(
     word_start: number,
     word_end: number,
     para_text: string
-  ): string {
+  ) {
     // Look into instead of returning, use by reference to edit para_text
     var word = para_text.substring(word_start, word_end + 1);
 
     // Query word
-    var new_word = this.query_word(word);
+    var new_word = await this.query_word(word);
+    console.log("Word returned: ", new_word)
     // Change word in para
     para_text =
       para_text.slice(0, word_start) + new_word + para_text.slice(word_end + 1);
@@ -97,23 +98,26 @@ export class PageScanner {
     return para_text;
   }
 
-  query_word(word: string) {
+  async query_word(word: string) {
     // Query the DB for the word
-    let query = {
-      acronym: "HPE",
-      definition: "Hewlett Packard Enterprise",
-      reference: "https://www.google.com",
-    };
+    let query = await this.query_db(word);
+    console.log("query:");
+    console.log(query);
     // if the word exists compile a abbr tag
     if (query) {
       const abbr_tag: string = this.tooltip(query);
       return abbr_tag;
     } else {
+      console.log("No result found: ", word)
       return word;
     }
     // if it doesnt exist then just return the word
   }
 
+  async query_db(word: string): Promise<any> {
+    return this.db.get('acronyms', word);
+  }
+  
   tooltip(word: any) {
     return (
       "<div class='tooltip'>" +
