@@ -6,10 +6,17 @@ export class PageScanner {
   }
 
   scan() {
-    const text_elements = document
-      .getElementById("content")!
-      .querySelectorAll("p, h1, h2, h3, h4");
+    const head_element = document.getElementsByTagName("head");
+    const content_element = document.getElementById("content")!;
 
+    let text_elements;
+    if (content_element) {
+      this.insert_style(head_element[0]);
+      text_elements = content_element.querySelectorAll("p, h1, h2, h3, h4");
+    } else {
+      console.log("Not on correct page - no 'content' element");
+      return undefined;
+    }
     // you can add more in the query using a comma e.g. "p, span"
 
     for (var i = 0; i < text_elements.length; i++) {
@@ -23,7 +30,6 @@ export class PageScanner {
     const word_pattern = /[a-zA-Z0-9]/;
     var on_tag: boolean = false;
     var on_word: boolean = false;
-    var start_word: number = 0;
     var end_word: number = 0;
     const len: number = paragraph.length;
 
@@ -99,14 +105,7 @@ export class PageScanner {
     console.log(query);
     // if the word exists compile a abbr tag
     if (query) {
-      const abbr_tag: string =
-        "<abbr title='" +
-        query.definition +
-        "&#13; &#13;" +
-        query.reference +
-        "'>" +
-        query.acronym +
-        "</Tooltip>";
+      const abbr_tag: string = this.tooltip(query);
       return abbr_tag;
     } else {
       console.log("No result found: ", word)
@@ -118,6 +117,66 @@ export class PageScanner {
   async query_db(word: string): Promise<any> {
     return this.db.get('acronyms', word);
   }
+  
+  tooltip(word: any) {
+    return (
+      "<div class='tooltip'>" +
+      word.acronym +
+      "<span class='tooltiptext'><strong>" +
+      word.acronym +
+      "</strong><br>" +
+      word.definition +
+      "<br><br><a href='" +
+      word.reference +
+      "'>" +
+      word.acronym +
+      "</a></span></div>"
+    );
+  }
 
-  tooltip() {}
+  insert_style(element: any) {
+    element.innerHTML =
+      element.innerHTML +
+      `
+            <style>
+            .tooltip {
+                    position: relative;
+                    display: inline-block;
+                    border-bottom: 3px dotted #01A986;
+                }
+
+            .tooltip .tooltiptext {
+                font-family: Arial;
+                visibility: hidden;
+                width: 300px;
+                background-color: #ffffff;
+                color: black;
+                text-align: left;
+                border-radius: 6px;
+                border: 1px solid #01A986;
+                padding: 10px;
+                position: absolute;
+                z-index: 1;
+                top: 150%;
+                left: -190%;
+                box-shadow: 0px 1px 6px 0px rgba(1, 169, 134, 0.32);
+            }
+
+            .tooltip .tooltiptext::after {
+                content: "";
+                position: absolute;
+                bottom: 100%;
+                left: 25%;
+                margin-left: -5px;
+                border-width: 4px;
+                border-style: solid;
+                border-color: transparent transparent #01A986 transparent;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+            }
+            </style>
+        `;
+  }
 }
