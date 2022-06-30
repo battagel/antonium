@@ -1,4 +1,10 @@
 export class PageScanner {
+  db: any;
+
+  constructor(db:any) {
+    this.db = db;
+  }
+
   scan() {
     const text_elements = document
       .getElementById("content")!
@@ -77,7 +83,8 @@ export class PageScanner {
     var word = para_text.substring(word_start, word_end + 1);
 
     // Query word
-    var new_word = this.query_word(word);
+    var new_word = await this.query_word(word).then(result => result.data);
+    console.log("Word returned: ", new_word)
     // Change word in para
     para_text =
       para_text.slice(0, word_start) + new_word + para_text.slice(word_end + 1);
@@ -85,18 +92,16 @@ export class PageScanner {
     return para_text;
   }
 
-  query_word(word: string) {
+  async query_word(word: string) {
     // Query the DB for the word
-    let query = {
-      acronym: "HPE",
-      explaination: "Hewlett Packard Enterprise",
-      reference: "www.hpe.com",
-    };
+    let query = await this.query_db(word);
+    console.log("query:");
+    console.log(query);
     // if the word exists compile a abbr tag
     if (query) {
       const abbr_tag: string =
         "<abbr title='" +
-        query.explaination +
+        query.definition +
         "&#13; &#13;" +
         query.reference +
         "'>" +
@@ -104,9 +109,14 @@ export class PageScanner {
         "</Tooltip>";
       return abbr_tag;
     } else {
+      console.log("No result found: ", word)
       return word;
     }
     // if it doesnt exist then just return the word
+  }
+
+  async query_db(word: string): Promise<any> {
+    return this.db.get('acronyms', word);
   }
 
   tooltip() {}
