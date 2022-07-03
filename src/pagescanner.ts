@@ -101,14 +101,14 @@ export class PageScanner {
       const abbr_tag: string = this.tooltip(query);
       return abbr_tag;
     } else {
-      console.log("No result found: ", word);
+      //console.log("No result found: ", word);
       return word;
     }
     // if it doesnt exist then just return the word
   }
 
   async query_db(word: string): Promise<any> {
-    return this.db.get("acronyms", word);
+    return this.db.get("acronym", word);
   }
 
   tooltip(word: any) {

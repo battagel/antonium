@@ -805,6 +805,11 @@
     "pify" "^4.0.1"
     "rimraf" "^2.6.3"
 
+"dexie@^3.2.2":
+  "integrity" "sha512-q5dC3HPmir2DERlX+toCBbHQXW5MsyrFqPFcovkH9N2S/UW/H3H5AWAB6iEOExeraAu+j+zRDG+zg/D7YhH0qg=="
+  "resolved" "https://registry.npmjs.org/dexie/-/dexie-3.2.2.tgz"
+  "version" "3.2.2"
+
 "dir-glob@^3.0.1":
   "integrity" "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="
   "resolved" "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz"
