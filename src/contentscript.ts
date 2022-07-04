@@ -1,5 +1,5 @@
 import { openDB, DBSchema } from "idb";
-import { PageScanner } from "./pagescanner";
+import { PageScanner } from "./page_scanner";
 import { DatabaseMgr } from "./database_mgr";
 import { WebScraper } from "./web_scraper";
 
@@ -7,9 +7,9 @@ const db_mgr = new DatabaseMgr();
 const web_scraper = new WebScraper();
 const page_scanner = new PageScanner(db_mgr);
 
-db_mgr.create_db();
+const url = "http://battagel.github.io/antonium_api/";
 
-const url = "http://localhost:8000/confluence.html";
+db_mgr.create_db();
 const data = web_scraper
   .scrape_website(url)
   .then((data) =>

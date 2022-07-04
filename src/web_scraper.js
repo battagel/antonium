@@ -1,8 +1,17 @@
 export class WebScraper {
+  // async write_json(url) {
+  //   const data = await this.scrape_website(url);
+  //   const json_data = JSON.stringift(data);
+
+  //   fs.writeFile("database.json", dictstring, function (err, result) {
+  //     if (err) console.log("error", err);
+  //   });
+  // }
+
   async scrape_website(url) {
     // Make sure this website is hosted
     const parser = new DOMParser();
-    console.log("Scraping confluence");
+    console.log("Scraping confluence for URL " + url);
     var raw_html = await fetch(url).then((res) => res.text());
     return this.disassemble_html(parser.parseFromString(raw_html, "text/html"));
   }
@@ -20,6 +29,7 @@ export class WebScraper {
   }
 
   process_row(row) {
+    // Error becaused caused by searching for table rows within an embedded table
     var tds = row.querySelectorAll("td");
     var dict_temp = {
       acronym: undefined,
@@ -29,10 +39,18 @@ export class WebScraper {
     if (tds[0]) {
       dict_temp["acronym"] = tds[0].innerText;
       if (tds[1]) {
-        dict_temp["definition"] = tds[1].innerText;
+        dict_temp["definition"] = tds[1].innerHTML;
       }
       if (tds[2]) {
-        dict_temp["reference"] = tds[2].innerText;
+        // Put all references into list and remove ref
+        var links = tds[2].querySelectorAll("a");
+        var new_links = [];
+        if (links !== []) {
+          for (var i = 0; i < links.length; i++) {
+            new_links.push(links.item(i).outerHTML);
+          }
+        }
+        dict_temp["reference"] = new_links;
       }
       return dict_temp;
     } else {
