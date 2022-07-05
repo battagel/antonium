@@ -35,16 +35,17 @@ export class WebScraper {
 
   process_row(row) {
     var tds = row.querySelectorAll("td");
+    // This regex doesnt work the best. Doesnt cope with /s or spaces
     const abbr_pattern =
       /\b(?:[A-Z]{2}[:alpha:]*)|(?:[A-Z][a-z][A-Z][:alpha:]*)/;
     var dict_temp = {
-      acronym: undefined,
+      word_key: undefined,
       definition: undefined,
       reference: undefined,
       type: undefined,
     };
     if (tds[0]) {
-      dict_temp["acronym"] = tds[0].innerText;
+      dict_temp["word_key"] = tds[0].innerText;
       if (tds[1]) {
         dict_temp["definition"] = tds[1].innerHTML;
       }
@@ -59,8 +60,11 @@ export class WebScraper {
         }
         dict_temp["reference"] = new_links;
       }
-      if (dict_temp["acronym"].match(abbr_pattern)) {
+      if (dict_temp["word_key"].match(abbr_pattern)) {
         dict_temp["type"] = "abbr";
+      } else {
+        dict_temp["type"] = "gen";
+        dict_temp["word_key"] = dict_temp["word_key"].toLowerCase();
       }
       return dict_temp;
     } else {

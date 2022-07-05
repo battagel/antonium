@@ -7,7 +7,7 @@ export class DatabaseMgr {
 
   create_db() {
     this.db.version(1).stores({
-      data_table: "acronym",
+      data_table: "word_key",
     });
     console.log("Created DB Schema");
   }

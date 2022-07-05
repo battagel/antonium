@@ -97,10 +97,10 @@ export class PageScanner {
 
   async query_word(word: string) {
     // Query the DB for the word
-    let query = await this.query_db(word);
+    let query = await this.query_db(word.toLowerCase());
     // if the word exists compile a abbr tag
     if (query) {
-      const abbr_tag: string = this.tooltip(query, original_word);
+      const abbr_tag: string = this.tooltip(query, word);
       return abbr_tag;
     } else {
       //console.log("No result found: ", word);
@@ -110,7 +110,7 @@ export class PageScanner {
   }
 
   async query_db(word: string): Promise<any> {
-    return this.db.get("acronym", word);
+    return this.db.get("word_key", word);
   }
 
   tooltip(word: any, original_word: string) {
@@ -120,17 +120,31 @@ export class PageScanner {
       formatted_links += "<li>" + word.reference[i] + "</li>";
     }
     formatted_links += "</ul>";
+
+    if (word.type === "gen") {
+      word.word_key = this.capitalizeWords(word.word_key);
+    }
     return (
       "<div class='tooltip'>" +
-      word.acronym +
+      original_word +
       "<span class='tooltiptext'><b>" +
-      word.acronym +
+      word.word_key +
       "</b><br><br>" +
       word.definition +
       "<br><br>" +
       formatted_links +
       "</span></div>"
     );
+  }
+
+  capitalizeWords(word: string) {
+    var word_array = word.split(" ");
+    var capital_word_array = word_array.map((element: string) => {
+      return (
+        element.charAt(0).toUpperCase() + element.substring(1).toLowerCase()
+      );
+    });
+    return capital_word_array.join(" ");
   }
 
   insert_style(element: any) {
@@ -157,7 +171,7 @@ export class PageScanner {
                 position: absolute;
                 z-index: 100;
                 top: 150%;
-                left: -140%;
+                left: -185%;
                 box-shadow: 0px 1px 6px 0px rgba(1, 169, 134, 0.32);
                 font-size: 14px;
             }
