@@ -148,6 +148,7 @@ export class PageScanner {
                 font-family: Arial;
                 visibility: hidden;
                 background-color: #ffffff;
+                min-width: 300px
                 color: black;
                 text-align: left;
                 border-radius: 6px;

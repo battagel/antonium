@@ -17,7 +17,12 @@ export class WebScraper {
   }
 
   disassemble_html(raw_html) {
-    const rows = raw_html.querySelectorAll("tr");
+    console.log(raw_html);
+    // Apply a filter to only pick up the heading rows in the parent table
+    const rows = raw_html.querySelectorAll(
+      "#main-content > table > tbody > tr"
+    );
+    console.log(rows);
     let data_items = [];
     for (var i = 0; i < rows.length; i++) {
       var row_dict = this.process_row(rows[i]);
