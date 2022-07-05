@@ -34,12 +34,14 @@ export class WebScraper {
   }
 
   process_row(row) {
-    // Error becaused caused by searching for table rows within an embedded table
     var tds = row.querySelectorAll("td");
+    const abbr_pattern =
+      /\b(?:[A-Z]{2}[:alpha:]*)|(?:[A-Z][a-z][A-Z][:alpha:]*)/;
     var dict_temp = {
       acronym: undefined,
       definition: undefined,
       reference: undefined,
+      type: undefined,
     };
     if (tds[0]) {
       dict_temp["acronym"] = tds[0].innerText;
@@ -56,6 +58,9 @@ export class WebScraper {
           }
         }
         dict_temp["reference"] = new_links;
+      }
+      if (dict_temp["acronym"].match(abbr_pattern)) {
+        dict_temp["type"] = "abbr";
       }
       return dict_temp;
     } else {

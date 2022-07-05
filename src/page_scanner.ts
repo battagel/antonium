@@ -100,7 +100,7 @@ export class PageScanner {
     let query = await this.query_db(word);
     // if the word exists compile a abbr tag
     if (query) {
-      const abbr_tag: string = this.tooltip(query);
+      const abbr_tag: string = this.tooltip(query, original_word);
       return abbr_tag;
     } else {
       //console.log("No result found: ", word);
@@ -113,7 +113,7 @@ export class PageScanner {
     return this.db.get("acronym", word);
   }
 
-  tooltip(word: any) {
+  tooltip(word: any, original_word: string) {
     // Error with words that are already links for some reason
     var formatted_links = "<ul>";
     for (var i = 0; i < word.reference.length; i++) {
