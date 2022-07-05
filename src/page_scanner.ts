@@ -115,10 +115,11 @@ export class PageScanner {
 
   tooltip(word: any) {
     // Error with words that are already links for some reason
-    var formatted_links = "";
+    var formatted_links = "<ul>";
     for (var i = 0; i < word.reference.length; i++) {
       formatted_links += "<li>" + word.reference[i] + "</li>";
     }
+    formatted_links += "</ul>";
     return (
       "<div class='tooltip'>" +
       word.acronym +
@@ -146,7 +147,6 @@ export class PageScanner {
             .tooltip .tooltiptext {
                 font-family: Arial;
                 visibility: hidden;
-                width: 300px;
                 background-color: #ffffff;
                 color: black;
                 text-align: left;
