@@ -7,6 +7,9 @@ export class WebScraper {
   //     if (err) console.log("error", err);
   //   });
   // }
+  constructor(option_types) {
+    this.option_types = option_types;
+  }
 
   async scrape_website(url) {
     // Make sure this website is hosted
@@ -17,17 +20,17 @@ export class WebScraper {
   }
 
   disassemble_html(raw_html) {
-    console.log(raw_html);
     // Apply a filter to only pick up the heading rows in the parent table
     const rows = raw_html.querySelectorAll(
       "#main-content > table > tbody > tr"
     );
-    console.log(rows);
     let data_items = [];
     for (var i = 0; i < rows.length; i++) {
       var row_dict = this.process_row(rows[i]);
       if (row_dict) {
-        data_items.push(row_dict);
+        if (this.option_types.includes(row_dict["type"])) {
+          data_items.push(row_dict);
+        }
       }
     }
     return data_items;

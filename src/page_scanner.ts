@@ -97,16 +97,19 @@ export class PageScanner {
 
   async query_word(word: string) {
     // Query the DB for the word
-    let query = await this.query_db(word.toLowerCase());
+    var query = await this.query_db(word.toLowerCase());
+
     // if the word exists compile a abbr tag
-    if (query) {
-      const abbr_tag: string = this.tooltip(query, word);
-      return abbr_tag;
-    } else {
-      //console.log("No result found: ", word);
-      return word;
+    if (!query) {
+      // Try without case correction
+      query = await this.query_db(word);
+      if (!query) {
+        return word;
+      }
     }
-    // if it doesnt exist then just return the word
+
+    const abbr_tag: string = this.tooltip(query, word);
+    return abbr_tag;
   }
 
   async query_db(word: string): Promise<any> {
@@ -170,6 +173,7 @@ export class PageScanner {
                 padding: 10px;
                 position: absolute;
                 z-index: 100;
+                transition: visibility 0s linear 300ms, opacity 300ms;
                 top: 150%;
                 left: -185%;
                 box-shadow: 0px 1px 6px 0px rgba(1, 169, 134, 0.32);

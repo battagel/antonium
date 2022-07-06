@@ -20,9 +20,13 @@ export class DatabaseMgr {
   async bulk_insert_of_confluence(data) {
     // Now add some values.
     console.log("Bulk inserting data");
-    console.log(data);
     this.db.data_table.bulkPut(data).catch((err) => {
       console.log("Error with populating DB " + err);
     });
+  }
+
+  clear_db() {
+    console.log("Cleaning up DB");
+    this.db.data_table.clear();
   }
 }
