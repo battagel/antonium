@@ -5538,7 +5538,7 @@ chrome.storage.sync.get(["option_types"], function (result) {
   const web_scraper = new _web_scraper__WEBPACK_IMPORTED_MODULE_2__.WebScraper(result["option_types"]);
   const page_scanner = new _page_scanner__WEBPACK_IMPORTED_MODULE_0__.PageScanner(db_mgr);
 
-  const url = "http://battagel.github.io/antonium_api/";
+  const url = "https://battagel.github.io/antonium_api/";
 
   db_mgr.create_db();
   web_scraper

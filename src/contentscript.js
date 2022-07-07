@@ -7,7 +7,7 @@ chrome.storage.sync.get(["option_types"], function (result) {
   const web_scraper = new WebScraper(result["option_types"]);
   const page_scanner = new PageScanner(db_mgr);
 
-  const url = "http://battagel.github.io/antonium_api/";
+  const url = "https://battagel.github.io/antonium_api/";
 
   db_mgr.create_db();
   web_scraper
