@@ -6,17 +6,8 @@ A chrome extension for explaining abbreviations and jargon words
 
 Clone the github down anywhere
 
-First install depenancies
-```
-npm install
-```
-
-Next build the project
-```
-npm run dev
-```
-
 Add to chrome by:
+
 - Navigate to the extensions section chrome://extensions
 - Enable developer mod
 - Click "Load unpacked"
@@ -32,4 +23,3 @@ Note that antonium only runs on certain websites like conflunece and stack overf
 Enjoy!
 
 Message me with any questions.
-
