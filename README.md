@@ -13,7 +13,7 @@ npm install
 
 Next build the project
 ```
-npm run build
+npm run dev
 ```
 
 Add to chrome by:
