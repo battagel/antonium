@@ -2,6 +2,8 @@
 
 A chrome extension for explaining abbreviations and jargon words
 
+ONLY WORKS IN CHROME SO FAR!
+
 # How to install
 
 Clone the github down anywhere
