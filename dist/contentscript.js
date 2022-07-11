@@ -48,6 +48,8 @@ class PageScanner {
             var paragraph = para_obj.innerHTML;
             const word_pattern = /[a-zA-Z0-9]/;
             var on_tag = false;
+            var end_tag = false;
+            var end_link = 0;
             var on_word = false;
             var end_word = 0;
             const len = paragraph.length;
@@ -56,6 +58,9 @@ class PageScanner {
                 if (char === ">") {
                     // found beginning of a tag
                     on_tag = true;
+                    if (!end_tag) {
+                        end_link = ptr;
+                    }
                     if (on_word) {
                         // beginning of tag is the end of a word
                         paragraph = yield this.process_word(ptr + 1, end_word, paragraph);
@@ -63,12 +68,23 @@ class PageScanner {
                     }
                     continue;
                 }
-                if (char == "<" && on_tag) {
-                    // found end of tag
-                    on_tag = false;
-                    continue;
+                if (on_tag) {
+                    if (char == "<") {
+                        // found end of tag
+                        if (end_tag) {
+                            // We have found the end tag and now have found the starting tag
+                            //paragraph = await this.process_link(ptr, end_link, paragraph);
+                            on_tag = false;
+                            end_tag = false;
+                        }
+                        else {
+                            // We have found the end of the closing tag
+                            end_tag = true;
+                            continue;
+                        }
+                    }
                 }
-                if (!on_tag) {
+                else {
                     // not in a tag so must be raw text
                     if (word_pattern.test(char)) {
                         // found a letter
@@ -99,41 +115,68 @@ class PageScanner {
             para_obj.innerHTML = paragraph;
         });
     }
+    process_link(link_start, link_end, para_text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var link = para_text.substring(link_start, link_end + 1);
+            if (link.slice(link.length - 4, link.length) === "</a>") {
+                // This must be a link
+                var new_link = yield this.query_link(link);
+                para_text =
+                    para_text.slice(0, link_start) +
+                        new_link +
+                        para_text.slice(link_end + 1);
+                return para_text;
+            }
+            else {
+                // Must be some other sort of embedded tag
+                console.log("Other embedded tag!");
+            }
+            return para_text;
+        });
+    }
     process_word(word_start, word_end, para_text) {
         return __awaiter(this, void 0, void 0, function* () {
             // Look into instead of returning, use by reference to edit para_text
             var word = para_text.substring(word_start, word_end + 1);
             // Query word
-            var new_word = yield this.query_word(word);
+            const new_word = yield this.query_db(word);
+            if (new_word) {
+                para_text = para_text.slice(0, word_start) + this.tooltip(new_word, word) + para_text.slice(word_end + 1);
+            }
             // Change word in para
-            para_text =
-                para_text.slice(0, word_start) + new_word + para_text.slice(word_end + 1);
             //console.log(para_text);
             return para_text;
         });
     }
-    query_word(word) {
+    query_link(link) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Query the DB for the word
-            var query = yield this.query_db(word.toLowerCase());
-            // if the word exists compile a abbr tag
-            if (!query) {
-                // Try without case correction
-                query = yield this.query_db(word);
-                if (!query) {
-                    return word;
-                }
-            }
-            const abbr_tag = this.tooltip(query, word);
-            return abbr_tag;
+            // This function does nothing but can be changes later
+            // Decided its best not to include links as you cannot
+            // embed a div inside of an a tag.
+            // Find what ever is in the tags
+            // <a href="http://www.google.com">JSON</a>
+            //
+            // const parser = new DOMParser();
+            // this.update_paragraph(parser.parseFromString(link, "text/html"))
         });
     }
     query_db(word) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.db.get("word_key", word);
+            var query = yield this.db.get("word_key", word.toLowerCase());
+            // if the word exists compile a abbr tag
+            if (!query) {
+                // Try without case correction
+                query = yield this.db.get("word_key", word);
+                if (!query) {
+                    return;
+                }
+            }
+            return query;
         });
     }
     tooltip(word, original_word) {
+        console.log(word);
+        console.log(original_word);
         // Error with words that are already links for some reason
         var formatted_links = "<ul>";
         for (var i = 0; i < word.reference.length; i++) {
