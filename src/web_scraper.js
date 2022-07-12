@@ -29,10 +29,11 @@ export class WebScraper {
       var row_dict = this.process_row(rows[i]);
       if (row_dict) {
         if (this.option_types.includes(row_dict["type"])) {
-          data_items.push(row_dict);
+          data_items = this.find_dups(row_dict, data_items);
         }
       }
     }
+    console.log(data_items)
     return data_items;
   }
 
@@ -48,9 +49,10 @@ export class WebScraper {
       type: undefined,
     };
     if (tds[0]) {
+      // Add some validation to this
       dict_temp["word_key"] = tds[0].innerText;
       if (tds[1]) {
-        dict_temp["definition"] = tds[1].innerHTML;
+        dict_temp["definition"] = [tds[1].innerHTML];
       }
       if (tds[2]) {
         // Put all references into list and remove ref
@@ -61,7 +63,7 @@ export class WebScraper {
             new_links.push(links.item(i).outerHTML);
           }
         }
-        dict_temp["reference"] = new_links;
+        dict_temp["reference"] = [new_links];
       }
       if (dict_temp["word_key"].match(abbr_pattern)) {
         dict_temp["type"] = "abbr";
@@ -73,5 +75,20 @@ export class WebScraper {
     } else {
       return undefined;
     }
+  }
+
+  find_dups(row_dict, data_items) {
+    // Check if there are duplicates in the list and append the values under the same key
+    for (var i = 0; i < data_items.length; i++) {
+      if (row_dict["word_key"] == data_items[i]["word_key"]) {
+        var combined_dict = data_items[i]
+        combined_dict["definition"].push(row_dict["definition"][0]);
+        combined_dict["reference"].push(row_dict["reference"][0]);
+        data_items[i] = combined_dict
+        return data_items
+      }
+    }
+    data_items.push(row_dict)
+    return data_items
   }
 }

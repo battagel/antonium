@@ -160,25 +160,32 @@ export class PageScanner {
     console.log(word)
     console.log(original_word)
     // Error with words that are already links for some reason
-    var formatted_links = "<ul>";
-    for (var i = 0; i < word.reference.length; i++) {
-      formatted_links += "<li>" + word.reference[i] + "</li>";
-    }
-    formatted_links += "</ul>";
 
     if (word.type === "gen") {
       word.word_key = this.capitalizeWords(word.word_key);
     }
+
+    var tooltip_text = "<span class='tooltiptext'><b>" + word.word_key + "</b>"
+
+    for (var i = 0; i < Math.max(word.definition.length, word.definition.length); i++) {
+      // Add definitions, then add links
+      if (word.definition[i]) {
+        tooltip_text += "<hr>" + word.definition[i] + "<br>"
+      }
+
+      var formatted_links = "<ul>";
+      for (var j = 0; j < word.reference[i].length; j++) {
+        formatted_links += "<li>" + word.reference[i][j] + "</li>";
+      }
+      formatted_links += "</ul>";
+
+      tooltip_text += formatted_links + ""
+    }
+
     return (
       "<div class='tooltip'>" +
-      original_word +
-      "<span class='tooltiptext'><b>" +
-      word.word_key +
-      "</b><br><br>" +
-      word.definition +
-      "<br><br>" +
-      formatted_links +
-      "</span></div>"
+      original_word + tooltip_text +
+      "</div>"
     );
   }
 
@@ -207,7 +214,7 @@ export class PageScanner {
                 font-family: Arial;
                 visibility: hidden;
                 background-color: #ffffff;
-                min-width: 300px
+                min-width: 300px;
                 color: black;
                 text-align: left;
                 border-radius: 6px;
