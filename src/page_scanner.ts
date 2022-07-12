@@ -157,17 +157,15 @@ export class PageScanner {
   }
 
   tooltip(word: any, original_word: string) {
-    console.log(word)
-    console.log(original_word)
-    // Error with words that are already links for some reason
+    const number_meanings = Math.max(word.definition.length, word.definition.length)
 
     if (word.type === "gen") {
       word.word_key = this.capitalizeWords(word.word_key);
     }
 
-    var tooltip_text = "<span class='tooltiptext'><b>" + word.word_key + "</b>"
+    var tooltip_text = "<span class='tooltiptext'><b>" + word.word_key + "</b>" + " - " + number_meanings + " potential meanings"
 
-    for (var i = 0; i < Math.max(word.definition.length, word.definition.length); i++) {
+    for (var i = 0; i < number_meanings; i++) {
       // Add definitions, then add links
       if (word.definition[i]) {
         tooltip_text += "<hr>" + word.definition[i] + "<br>"
