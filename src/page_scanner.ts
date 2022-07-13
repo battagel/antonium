@@ -219,10 +219,11 @@ export class PageScanner {
                 border: 1px solid #01A986;
                 padding: 10px;
                 position: absolute;
-                z-index: 100;
+                z-index: 9999999;
                 transition: visibility 0s linear 300ms, opacity 300ms;
                 top: 150%;
-                left: -185%;
+                left: 50%;
+                transform: translateX(-25%);
                 box-shadow: 0px 1px 6px 0px rgba(1, 169, 134, 0.32);
                 font-size: 14px;
             }
@@ -233,7 +234,7 @@ export class PageScanner {
                 bottom: 100%;
                 left: 25%;
                 margin-left: -5px;
-                border-width: 10px;
+                border-width: 8px;
                 border-style: solid;
                 border-color: transparent transparent #01A986 transparent;
             }

@@ -225,10 +225,11 @@ class PageScanner {
                 border: 1px solid #01A986;
                 padding: 10px;
                 position: absolute;
-                z-index: 100;
+                z-index: 9999999;
                 transition: visibility 0s linear 300ms, opacity 300ms;
                 top: 150%;
-                left: -185%;
+                left: 50%;
+                transform: translateX(-25%);
                 box-shadow: 0px 1px 6px 0px rgba(1, 169, 134, 0.32);
                 font-size: 14px;
             }
@@ -239,7 +240,7 @@ class PageScanner {
                 bottom: 100%;
                 left: 25%;
                 margin-left: -5px;
-                border-width: 10px;
+                border-width: 8px;
                 border-style: solid;
                 border-color: transparent transparent #01A986 transparent;
             }
@@ -362,33 +363,36 @@ class WebScraper {
       reference: undefined,
       type: undefined,
     };
+    console.log(tds[0])
+    console.log(tds[0].innerText.split(" "))
     if (tds[0]) {
-      // Add some validation to this
-      dict_temp["word_key"] = tds[0].innerText;
-      if (tds[1]) {
-        dict_temp["definition"] = [tds[1].innerHTML];
-      }
-      if (tds[2]) {
-        // Put all references into list and remove ref
-        var links = tds[2].querySelectorAll("a");
-        var new_links = [];
-        if (links !== []) {
-          for (var i = 0; i < links.length; i++) {
-            new_links.push(links.item(i).outerHTML);
-          }
+      // This sorts to make sure only one word answers are being added
+      if (tds[0].innerText.split(" ").length === 1) {
+        dict_temp["word_key"] = tds[0].innerText;
+        if (tds[1]) {
+          dict_temp["definition"] = [tds[1].innerHTML];
         }
-        dict_temp["reference"] = [new_links];
+        if (tds[2]) {
+          // Put all references into list and remove ref
+          var links = tds[2].querySelectorAll("a");
+          var new_links = [];
+          if (links !== []) {
+            for (var i = 0; i < links.length; i++) {
+              new_links.push(links.item(i).outerHTML);
+            }
+          }
+          dict_temp["reference"] = [new_links];
+        }
+        if (dict_temp["word_key"].match(abbr_pattern)) {
+          dict_temp["type"] = "abbr";
+        } else {
+          dict_temp["type"] = "gen";
+          dict_temp["word_key"] = dict_temp["word_key"].toLowerCase();
+        }
+        return dict_temp;
       }
-      if (dict_temp["word_key"].match(abbr_pattern)) {
-        dict_temp["type"] = "abbr";
-      } else {
-        dict_temp["type"] = "gen";
-        dict_temp["word_key"] = dict_temp["word_key"].toLowerCase();
-      }
-      return dict_temp;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   find_dups(row_dict, data_items) {

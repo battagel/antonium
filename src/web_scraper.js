@@ -48,33 +48,36 @@ export class WebScraper {
       reference: undefined,
       type: undefined,
     };
+    console.log(tds[0])
+    console.log(tds[0].innerText.split(" "))
     if (tds[0]) {
-      // Add some validation to this
-      dict_temp["word_key"] = tds[0].innerText;
-      if (tds[1]) {
-        dict_temp["definition"] = [tds[1].innerHTML];
-      }
-      if (tds[2]) {
-        // Put all references into list and remove ref
-        var links = tds[2].querySelectorAll("a");
-        var new_links = [];
-        if (links !== []) {
-          for (var i = 0; i < links.length; i++) {
-            new_links.push(links.item(i).outerHTML);
-          }
+      // This sorts to make sure only one word answers are being added
+      if (tds[0].innerText.split(" ").length === 1) {
+        dict_temp["word_key"] = tds[0].innerText;
+        if (tds[1]) {
+          dict_temp["definition"] = [tds[1].innerHTML];
         }
-        dict_temp["reference"] = [new_links];
+        if (tds[2]) {
+          // Put all references into list and remove ref
+          var links = tds[2].querySelectorAll("a");
+          var new_links = [];
+          if (links !== []) {
+            for (var i = 0; i < links.length; i++) {
+              new_links.push(links.item(i).outerHTML);
+            }
+          }
+          dict_temp["reference"] = [new_links];
+        }
+        if (dict_temp["word_key"].match(abbr_pattern)) {
+          dict_temp["type"] = "abbr";
+        } else {
+          dict_temp["type"] = "gen";
+          dict_temp["word_key"] = dict_temp["word_key"].toLowerCase();
+        }
+        return dict_temp;
       }
-      if (dict_temp["word_key"].match(abbr_pattern)) {
-        dict_temp["type"] = "abbr";
-      } else {
-        dict_temp["type"] = "gen";
-        dict_temp["word_key"] = dict_temp["word_key"].toLowerCase();
-      }
-      return dict_temp;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   find_dups(row_dict, data_items) {
