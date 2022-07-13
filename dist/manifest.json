@@ -1,7 +1,7 @@
 {
   "name": "Antonium",
-  "description": "Abbreviation highlighter",
-  "version": "1.0",
+  "description": "HPE's word and abbreviation highlighter",
+  "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
     "512": "antonium-logo.png"
@@ -9,7 +9,10 @@
   "action": {
     "default_popup": "popup.html"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "*://confluence.eng.nimblestorage.com/pages/viewpage.action?*",
+    "*://stackoverflow.com/questions/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
