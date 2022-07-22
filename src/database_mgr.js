@@ -9,7 +9,7 @@ export class DatabaseMgr {
     this.db.version(1).stores({
       data_table: "word_key",
     });
-    console.log("Created DB Schema");
+    //console.log("Created DB Schema");
   }
 
   get(key, value) {
@@ -19,14 +19,14 @@ export class DatabaseMgr {
 
   async bulk_insert_of_confluence(data) {
     // Now add some values.
-    console.log("Bulk inserting data");
+    //console.log("Bulk inserting data");
     this.db.data_table.bulkPut(data).catch((err) => {
       console.log("Error with populating DB " + err);
     });
   }
 
   clear_db() {
-    console.log("Cleaning up DB");
+    //console.log("Cleaning up DB");
     this.db.data_table.clear();
   }
 }

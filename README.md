@@ -6,9 +6,13 @@ ONLY WORKS IN CHROME SO FAR!
 
 # How to install
 
-Clone the github down anywhere
+Now available on the Chrome Store [here](https://chrome.google.com/webstore/detail/antonium/limefeflenjlmfiemaihjfnodfolldke)!
 
-Add to chrome by:
+Simple install and on either confluence or stackoverflow select the type of words you want explained. The page will reload and any detected word will appear underlined.
+
+**OR**
+
+Clone the github locally. Add to chrome by:
 
 - Navigate to the extensions section chrome://extensions
 - Enable developer mod
@@ -20,7 +24,7 @@ Add to chrome by:
 - The page should reload automatically however you might need to manually trigger this
 - Tah Dah! It should have loaded tooltips!
 
-Note that antonium only runs on certain websites like conflunece and stack overflow
+Note that antonium only runs on certain websites like conflunece and stack overflow.
 
 Enjoy!
 

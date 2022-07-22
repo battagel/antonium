@@ -1,7 +1,7 @@
 {
   "name": "Antonium",
   "description": "HPE's word and abbreviation highlighter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
     "512": "antonium-logo.png"

@@ -110,7 +110,7 @@ export class PageScanner {
       return para_text;
     } else {
       // Must be some other sort of embedded tag
-      console.log("Other embedded tag!");
+      //console.log("Other embedded tag!");
     }
     return para_text;
   }

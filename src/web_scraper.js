@@ -1,22 +1,42 @@
 export class WebScraper {
-  // async write_json(url) {
-  //   const data = await this.scrape_website(url);
-  //   const json_data = JSON.stringift(data);
 
-  //   fs.writeFile("database.json", dictstring, function (err, result) {
-  //     if (err) console.log("error", err);
-  //   });
-  // }
   constructor(option_types) {
     this.option_types = option_types;
+  }
+
+  async scrape(general_url, hpe_url) {
+
+    if (general_url) {
+      console.log("General url found. Scraping...")
+      general_data = await this.scrape_website(general_url)
+    }
+
+    if (hpe_url) {
+      console.log("HPE url found. Scraping...")
+      hpe_data = await this.scrape_website(hpe_url)
+    }
+
+    var concat_dict = html_data
+
+    return concat_dict
+  }
+
+  async scrape_json(general_url) {
+    console.log(general_url)
   }
 
   async scrape_website(url) {
     // Make sure this website is hosted
     const parser = new DOMParser();
-    console.log("Scraping confluence for URL " + url);
-    var raw_html = await fetch(url).then((res) => res.text());
-    return this.disassemble_html(parser.parseFromString(raw_html, "text/html"));
+    //console.log("Scraping confluence for URL " + url);
+    var raw_html = await fetch(url).then((res) => res.text()).catch(console.log("Error found"))
+    if (raw_html) {
+      return this.disassemble_html(parser.parseFromString(raw_html, "text/html"));
+    }
+    else {
+      console.log("Failed to find data for provided URL " + url)
+      return {}
+    }
   }
 
   disassemble_html(raw_html) {
@@ -33,7 +53,6 @@ export class WebScraper {
         }
       }
     }
-    console.log(data_items)
     return data_items;
   }
 
@@ -48,8 +67,6 @@ export class WebScraper {
       reference: undefined,
       type: undefined,
     };
-    console.log(tds[0])
-    console.log(tds[0].innerText.split(" "))
     if (tds[0]) {
       // This sorts to make sure only one word answers are being added
       if (tds[0].innerText.split(" ").length === 1) {

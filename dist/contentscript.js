@@ -129,7 +129,7 @@ class PageScanner {
             }
             else {
                 // Must be some other sort of embedded tag
-                console.log("Other embedded tag!");
+                //console.log("Other embedded tag!");
             }
             return para_text;
         });
@@ -278,7 +278,7 @@ class DatabaseMgr {
     this.db.version(1).stores({
       data_table: "word_key",
     });
-    console.log("Created DB Schema");
+    //console.log("Created DB Schema");
   }
 
   get(key, value) {
@@ -288,14 +288,14 @@ class DatabaseMgr {
 
   async bulk_insert_of_confluence(data) {
     // Now add some values.
-    console.log("Bulk inserting data");
+    //console.log("Bulk inserting data");
     this.db.data_table.bulkPut(data).catch((err) => {
       console.log("Error with populating DB " + err);
     });
   }
 
   clear_db() {
-    console.log("Cleaning up DB");
+    //console.log("Cleaning up DB");
     this.db.data_table.clear();
   }
 }
@@ -314,24 +314,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "WebScraper": () => (/* binding */ WebScraper)
 /* harmony export */ });
 class WebScraper {
-  // async write_json(url) {
-  //   const data = await this.scrape_website(url);
-  //   const json_data = JSON.stringift(data);
 
-  //   fs.writeFile("database.json", dictstring, function (err, result) {
-  //     if (err) console.log("error", err);
-  //   });
-  // }
   constructor(option_types) {
     this.option_types = option_types;
+  }
+
+  async scrape(general_url, hpe_url) {
+
+    if (general_url) {
+      console.log("General url found. Scraping...")
+      general_data = await this.scrape_website(general_url)
+    }
+
+    if (hpe_url) {
+      console.log("HPE url found. Scraping...")
+      hpe_data = await this.scrape_website(hpe_url)
+    }
+
+    var concat_dict = html_data
+
+    return concat_dict
+  }
+
+  async scrape_json(general_url) {
+    console.log(general_url)
   }
 
   async scrape_website(url) {
     // Make sure this website is hosted
     const parser = new DOMParser();
-    console.log("Scraping confluence for URL " + url);
-    var raw_html = await fetch(url).then((res) => res.text());
-    return this.disassemble_html(parser.parseFromString(raw_html, "text/html"));
+    //console.log("Scraping confluence for URL " + url);
+    var raw_html = await fetch(url).then((res) => res.text()).catch(console.log("Error found"))
+    if (raw_html) {
+      return this.disassemble_html(parser.parseFromString(raw_html, "text/html"));
+    }
+    else {
+      console.log("Failed to find data for provided URL " + url)
+      return {}
+    }
   }
 
   disassemble_html(raw_html) {
@@ -348,7 +368,6 @@ class WebScraper {
         }
       }
     }
-    console.log(data_items)
     return data_items;
   }
 
@@ -363,8 +382,6 @@ class WebScraper {
       reference: undefined,
       type: undefined,
     };
-    console.log(tds[0])
-    console.log(tds[0].innerText.split(" "))
     if (tds[0]) {
       // This sorts to make sure only one word answers are being added
       if (tds[0].innerText.split(" ").length === 1) {
@@ -5602,15 +5619,17 @@ chrome.storage.sync.get(["option_types"], function (result) {
   const web_scraper = new _web_scraper__WEBPACK_IMPORTED_MODULE_2__.WebScraper(result["option_types"]);
   const page_scanner = new _page_scanner__WEBPACK_IMPORTED_MODULE_0__.PageScanner(db_mgr);
 
-  const url = "https://battagel.github.io/antonium_api/";
+  // const general_url = "https://battagel.github.io/antonium_api/data.json";
+  const general_url = undefined
+  const hpe_url = "https://confluence.eng.nimblestorage.com/pages/viewpage.action?spaceKey=~bouletp&title=Alphabet+Soup";
 
   db_mgr.create_db();
   web_scraper
-    .scrape_website(url)
+    .scrape(general_url, hpe_url)
     .then((data) =>
       db_mgr
         .bulk_insert_of_confluence(data)
-        .then(() => console.log("DB Populated"))
+        .then(() => console.log("DB population complete"))
     );
 
   page_scanner.scan();
